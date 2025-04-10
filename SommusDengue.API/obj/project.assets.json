@@ -1211,11 +1211,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\User\\bet\\TestSommus1\\SommusDengue.API\\SommusDengue.API.csproj",
+      "projectUniqueName": "C:\\Users\\User\\TestSommus\\SommusDengue.API\\SommusDengue.API.csproj",
       "projectName": "SommusDengue.API",
-      "projectPath": "c:\\Users\\User\\bet\\TestSommus1\\SommusDengue.API\\SommusDengue.API.csproj",
+      "projectPath": "C:\\Users\\User\\TestSommus\\SommusDengue.API\\SommusDengue.API.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\User\\bet\\TestSommus1\\SommusDengue.API\\obj\\",
+      "outputPath": "C:\\Users\\User\\TestSommus\\SommusDengue.API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"

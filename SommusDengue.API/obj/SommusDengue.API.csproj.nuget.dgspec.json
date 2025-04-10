@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\User\\bet\\TestSommus1\\SommusDengue.API\\SommusDengue.API.csproj": {}
+    "C:\\Users\\User\\TestSommus\\SommusDengue.API\\SommusDengue.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\User\\bet\\TestSommus1\\SommusDengue.API\\SommusDengue.API.csproj": {
+    "C:\\Users\\User\\TestSommus\\SommusDengue.API\\SommusDengue.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\User\\bet\\TestSommus1\\SommusDengue.API\\SommusDengue.API.csproj",
+        "projectUniqueName": "C:\\Users\\User\\TestSommus\\SommusDengue.API\\SommusDengue.API.csproj",
         "projectName": "SommusDengue.API",
-        "projectPath": "C:\\Users\\User\\bet\\TestSommus1\\SommusDengue.API\\SommusDengue.API.csproj",
+        "projectPath": "C:\\Users\\User\\TestSommus\\SommusDengue.API\\SommusDengue.API.csproj",
         "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\User\\bet\\TestSommus1\\SommusDengue.API\\obj\\",
+        "outputPath": "C:\\Users\\User\\TestSommus\\SommusDengue.API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config"

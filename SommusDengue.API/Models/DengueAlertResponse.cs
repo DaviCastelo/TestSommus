@@ -8,7 +8,7 @@ namespace SommusDengue.API.Models
         public string SemanaEpidemiologica { get; set; } = string.Empty;
 
         [JsonPropertyName("casos_est")]
-        public double CasosEstimados { get; set; }
+        public decimal CasosEstimados { get; set; }
 
         [JsonPropertyName("casos_notificados")]
         public int CasosNotificados { get; set; }

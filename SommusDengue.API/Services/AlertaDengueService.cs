@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SommusDengue.API.Models;
@@ -14,11 +15,17 @@ namespace SommusDengue.API.Services
         private readonly ILogger<AlertaDengueService> _logger;
         private const string BaseUrl = "https://info.dengue.mat.br/api/alertcity";
         private const string GeocodeBH = "3106200";
+        private readonly JsonSerializerOptions _jsonOptions;
 
         public AlertaDengueService(HttpClient httpClient, ILogger<AlertaDengueService> logger)
         {
             _httpClient = httpClient;
             _logger = logger;
+            _jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                NumberHandling = JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.AllowNamedFloatingPointLiterals
+            };
         }
 
         public async Task<IEnumerable<DengueAlert>> GetDengueAlerts(int startWeek, int endWeek, int startYear, int endYear)
@@ -37,12 +44,9 @@ namespace SommusDengue.API.Services
                     throw new HttpRequestException($"API request failed with status {response.StatusCode}");
                 }
 
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
+                _logger.LogInformation($"Received JSON content: {content}");
 
-                var alerts = JsonSerializer.Deserialize<IEnumerable<DengueAlert>>(content, options);
+                var alerts = JsonSerializer.Deserialize<IEnumerable<DengueAlert>>(content, _jsonOptions);
                 return alerts ?? Enumerable.Empty<DengueAlert>();
             }
             catch (Exception ex)
