@@ -19,7 +19,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["node", "jest", "@testing-library/jest-dom", "@testing-library/react"],
+    "types": ["node", "jest", "@testing-library/jest-dom"],
     "typeRoots": ["./node_modules/@types", "./src/types"]
   },
   "include": [
