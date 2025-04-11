@@ -63,9 +63,9 @@ docker-compose up -d
 ```
 
 4. Acesse a aplicação:
-- Frontend: http://localhost:3000
-- Backend: http://localhost:5000
-- Swagger: http://localhost:5000/swagger
+- Frontend: http://localhost:5173/
+- Backend: http://localhost:5190
+- Swagger: http://localhost:5190/swagger/index.html
 
 ### Configuração Manual
 
@@ -319,13 +319,10 @@ http://localhost:5000/swagger
 4. Push para a branch (`git push origin feature/nova-feature`)
 5. Abra um Pull Request
 
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ## 👥 Autores
 
-- Seu Nome - [seu-email@exemplo.com](mailto:seu-email@exemplo.com)
+- Davi Gomes Castelo - davicastelo230800@gmail.com
 
 ## 🙏 Agradecimentos
 
