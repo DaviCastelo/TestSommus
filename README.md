@@ -34,8 +34,8 @@ O projeto é dividido em três partes principais:
 
 1. **Clone o repositório**
 ```bash
-git clone https://github.com/seu-usuario/sommus-dengue.git
-cd sommus-dengue
+git clone https://github.com/DaviCastelo/TestSommus.git
+cd TestSommus
 ```
 
 2. **Configure o banco de dados MySQL**
@@ -123,7 +123,7 @@ npm start
 
 ## Uso
 
-1. Acesse a interface web em `http://localhost:3000`
+1. Acesse a interface web em `http://localhost:5173`
 2. Clique no botão "SINCRONIZAR DADOS" para atualizar os dados do InfoDengue
 3. Visualize os dados através dos diferentes componentes:
    - Gráfico de evolução dos casos
