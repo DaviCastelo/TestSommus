@@ -1,164 +1,333 @@
-# Sistema de Monitoramento de Dengue - BH
+# Sistema de Monitoramento de Dengue - Sommus
 
-Este projeto consiste em um sistema de monitoramento de casos de dengue em Belo Horizonte, com coleta automática de dados do InfoDengue e visualização através de uma interface web moderna.
+Sistema de monitoramento de casos de dengue para Belo Horizonte, desenvolvido como parte do teste técnico para a Sommus Sistemas.
 
-## Estrutura do Projeto
+## 🚀 Funcionalidades
 
-O projeto é dividido em três partes principais:
+- **Coleta de Dados**: Captura automática de dados da API AlertaDengue para Belo Horizonte
+- **Visualização de Dados**: 
+  - Tabela interativa com filtros e ordenação
+  - Gráficos de evolução dos casos
+  - Cards informativos por semana epidemiológica
+- **Alertas**: Sistema de notificações para níveis de alerta alto
+- **Exportação**: Exportação de dados em formato CSV
+- **Cache**: Sistema de cache para melhorar a performance
+- **Responsividade**: Interface adaptável para diferentes dispositivos
 
-1. **Coletor de Dados** (Python)
-   - Script que coleta dados da API do InfoDengue
-   - Armazena os dados em um banco MySQL
-   - Atualiza automaticamente os dados das últimas semanas
+## 🛠️ Tecnologias Utilizadas
 
-2. **API Backend** (C# / .NET)
-   - Fornece endpoints REST para acesso aos dados
-   - Gerencia a sincronização com o banco de dados
-   - Implementa lógica de negócios e transformação de dados
-   - Documentação Swagger disponível em: http://localhost:5190/swagger
+### Backend
+- .NET 6.0
+- C#
+- MySQL
+- Entity Framework Core
+- Swagger/OpenAPI
 
-3. **Interface Web** (React / TypeScript)
-   - Visualização interativa dos dados
-   - Gráficos e tabelas dinâmicas
-   - Interface responsiva e moderna
+### Frontend
+- React 18
+- TypeScript
+- Material UI
+- Recharts
+- Jest e React Testing Library
 
-## Pré-requisitos
+### Infraestrutura
+- Docker
+- Docker Compose
 
-- Python 3.8 ou superior
-- .NET 7.0 SDK
-- Node.js 18 ou superior
-- MySQL 8.0 ou superior
-- Git
+## 📋 Pré-requisitos
 
-## Configuração do Ambiente
+- .NET 6.0 SDK
+- Node.js 16+
+- MySQL 8.0
+- Docker e Docker Compose (opcional)
 
-1. **Clone o repositório**
+## 🔧 Configuração do Ambiente
+
+### Usando Docker (Recomendado)
+
+1. Clone o repositório:
 ```bash
-git clone https://github.com/DaviCastelo/TestSommus.git
-cd TestSommus
+git clone https://github.com/seu-usuario/sommus-dengue.git
+cd sommus-dengue
 ```
 
-2. **Configure o banco de dados MySQL**
-```sql
-CREATE DATABASE denguedb;
-USE denguedb;
-
-CREATE TABLE denguealerts (
-    Id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    SemanaEpidemiologica INT NOT NULL,
-    DataIniSETimestamp BIGINT NOT NULL,
-    CasosEstimados DECIMAL(10,2) NOT NULL,
-    CasosEstimadosMin DECIMAL(10,2) NOT NULL,
-    CasosEstimadosMax DECIMAL(10,2) NOT NULL,
-    CasosNotificados INT NOT NULL,
-    ProbabilidadeRt1 DECIMAL(10,2) NOT NULL,
-    IncidenciaPor100k DECIMAL(10,2) NOT NULL,
-    NivelAlerta INT NOT NULL,
-    NumeroReprodutivoEfetivo DECIMAL(10,2) NOT NULL,
-    Populacao INT NOT NULL,
-    Receptividade INT NOT NULL,
-    Transmissao INT NOT NULL,
-    NivelIncidencia INT NOT NULL,
-    NotificacoesAcumuladasAno INT NOT NULL,
-    CONSTRAINT UK_SemanaAno UNIQUE (SemanaEpidemiologica, DataIniSETimestamp)
-);
-```
-
-3. **Configure o Coletor de Dados (Python)**
+2. Configure as variáveis de ambiente:
 ```bash
-cd python
-# Crie um ambiente virtual
-python -m venv venv
-# Ative o ambiente virtual
-# No Windows:
-venv\Scripts\activate
-# No Linux/Mac:
-source venv/bin/activate
-
-# Instale as dependências
-pip install -r requirements.txt
-
-# Configure as variáveis de ambiente no arquivo .env
-MYSQL_HOST=localhost
-MYSQL_USER=seu_usuario
-MYSQL_PASSWORD=sua_senha
-MYSQL_DATABASE=denguedb
+cp .env.example .env
+# Edite o arquivo .env com suas configurações
 ```
 
-4. **Configure a API Backend (.NET)**
+3. Inicie os containers:
+```bash
+docker-compose up -d
+```
+
+4. Acesse a aplicação:
+- Frontend: http://localhost:3000
+- Backend: http://localhost:5000
+- Swagger: http://localhost:5000/swagger
+
+### Configuração Manual
+
+#### Backend
+
+1. Configure o banco de dados:
 ```bash
 cd SommusDengue.API
-# Restaure os pacotes
-dotnet restore
-# Atualize o arquivo appsettings.json com a string de conexão do banco
+dotnet ef database update
 ```
 
-5. **Configure a Interface Web (React)**
+2. Execute a aplicação:
 ```bash
-cd sommus-dengue-web
-# Instale as dependências
-npm install
-```
-
-## Executando o Projeto
-
-1. **Inicie o Coletor de Dados**
-```bash
-cd python
-# Ative o ambiente virtual se ainda não estiver ativo
-python dengue_data_collector.py
-```
-
-2. **Inicie a API Backend**
-```bash
-cd SommusDengue.API
 dotnet run
 ```
 
-3. **Inicie a Interface Web**
+#### Frontend
+
+1. Instale as dependências:
 ```bash
-cd sommus-dengue-web
+cd frontend
+npm install
+```
+
+2. Configure as variáveis de ambiente:
+```bash
+cp .env.example .env
+# Edite o arquivo .env com suas configurações
+```
+
+3. Execute a aplicação:
+```bash
 npm start
 ```
 
-## Uso
+## 📊 Estrutura do Projeto
 
-1. Acesse a interface web em `http://localhost:5173`
-2. Clique no botão "SINCRONIZAR DADOS" para atualizar os dados do InfoDengue
-3. Visualize os dados através dos diferentes componentes:
-   - Gráfico de evolução dos casos
-   - Cards com informações das últimas 3 semanas
-   - Tabela detalhada com todos os dados
+```
+sommus-dengue/
+├── frontend/                 # Aplicação React
+│   ├── src/
+│   │   ├── components/      # Componentes React
+│   │   ├── services/        # Serviços e APIs
+│   │   ├── types/          # Definições de tipos TypeScript
+│   │   └── __tests__/      # Testes
+│   └── package.json
+├── SommusDengue.API/        # API .NET
+│   ├── Controllers/         # Controladores da API
+│   ├── Services/            # Serviços de negócio
+│   ├── Repositories/        # Camada de acesso a dados
+│   └── Models/              # Modelos de dados
+├── scripts/                 # Scripts Python para coleta de dados
+└── docker-compose.yml       # Configuração Docker
+```
 
-## Funcionalidades
+## 🧪 Testes
 
-- **Visualização de Dados**
-  - Gráfico de linha mostrando a evolução dos casos estimados e notificados
-  - Cards informativos com dados resumidos das últimas semanas
-  - Tabela detalhada com todas as informações coletadas
+### Backend (.NET)
 
-- **Sincronização Automática**
-  - Botão para sincronização manual dos dados
-  - Coleta automática de dados do InfoDengue
-  - Atualização do banco de dados sem duplicatas
+1. **Estrutura de Testes**
+```bash
+cd SommusDengue.API
+dotnet new xunit -n SommusDengue.Tests
+```
 
-- **Indicadores**
-  - Nível de alerta por semana
-  - Casos estimados e notificados
-  - Índices de transmissão e receptividade
-  - Número reprodutivo efetivo
-  - Incidência por 100 mil habitantes
+2. **Exemplo de Teste para o Serviço de Dengue**
+```csharp
+using Xunit;
+using Moq;
+using SommusDengue.API.Services;
+using SommusDengue.API.Models;
 
-## Contribuição
+public class DengueServiceTests
+{
+    private readonly Mock<IDengueRepository> _mockRepository;
+    private readonly DengueService _service;
 
-Para contribuir com o projeto:
+    public DengueServiceTests()
+    {
+        _mockRepository = new Mock<IDengueRepository>();
+        _service = new DengueService(_mockRepository.Object);
+    }
 
-1. Faça um fork do repositório
+    [Fact]
+    public async Task GetDengueDataByWeek_ShouldReturnData_WhenWeekExists()
+    {
+        // Arrange
+        var expectedData = new DengueAlert
+        {
+            SemanaEpidemiologica = 1,
+            CasosEstimados = 100,
+            NivelAlerta = 2
+        };
+        _mockRepository.Setup(r => r.GetByWeek(1, 2024))
+            .ReturnsAsync(expectedData);
+
+        // Act
+        var result = await _service.GetDengueDataByWeek(1, 2024);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(expectedData.SemanaEpidemiologica, result.SemanaEpidemiologica);
+        Assert.Equal(expectedData.CasosEstimados, result.CasosEstimados);
+    }
+}
+```
+
+### Frontend (React/TypeScript)
+
+1. **Testando Componentes**
+```typescript
+// DengueTable.test.tsx
+import { render, screen, fireEvent } from '@testing-library/react';
+import { DengueTable } from '../DengueTable';
+import { DengueData } from '../types/dengue';
+
+describe('DengueTable', () => {
+    const mockData: DengueData[] = [
+        {
+            semanaEpidemiologica: 1,
+            casosEstimados: 100,
+            nivelAlerta: 2,
+            dataIniSETimestamp: 1234567890
+        }
+    ];
+
+    it('should render table with data', () => {
+        render(<DengueTable data={mockData} />);
+        
+        expect(screen.getByText('1')).toBeInTheDocument();
+        expect(screen.getByText('100')).toBeInTheDocument();
+        expect(screen.getByText('2')).toBeInTheDocument();
+    });
+});
+```
+
+2. **Testando Serviços**
+```typescript
+// dengueService.test.ts
+import { fetchDengueData, getCachedData } from '../services/dengueService';
+
+describe('dengueService', () => {
+    beforeEach(() => {
+        localStorage.clear();
+    });
+
+    it('should fetch data from API', async () => {
+        const mockResponse = {
+            semanaEpidemiologica: 1,
+            casosEstimados: 100
+        };
+        
+        global.fetch = jest.fn().mockResolvedValue({
+            ok: true,
+            json: () => Promise.resolve(mockResponse)
+        });
+
+        const result = await fetchDengueData(1, 2024);
+        
+        expect(result).toEqual(mockResponse);
+        expect(fetch).toHaveBeenCalledWith(
+            expect.stringContaining('/api/dengue/week/1/2024')
+        );
+    });
+});
+```
+
+### Executando os Testes
+
+1. **Backend (.NET)**
+```bash
+cd SommusDengue.API
+dotnet test
+```
+
+2. **Frontend (React)**
+```bash
+cd frontend
+npm test
+```
+
+Para ver a cobertura de testes:
+```bash
+npm run test:coverage
+```
+
+### Boas Práticas para Testes
+
+1. **Arrange-Act-Assert (AAA)**
+   - Arrange: Prepare os dados e condições necessárias
+   - Act: Execute a ação que está sendo testada
+   - Assert: Verifique se o resultado é o esperado
+
+2. **Nomes Descritivos**
+   - Use nomes que descrevam o que está sendo testado
+   - Exemplo: `should_return_error_when_invalid_week_provided`
+
+3. **Isolamento**
+   - Cada teste deve ser independente
+   - Use mocks para dependências externas
+   - Limpe o estado entre os testes
+
+4. **Cobertura**
+   - Teste casos de sucesso e erro
+   - Teste edge cases
+   - Mantenha uma boa cobertura de código
+
+5. **Manutenção**
+   - Mantenha os testes atualizados
+   - Refatore testes quando o código muda
+   - Use helpers e fixtures para código repetitivo
+
+### Ferramentas Úteis
+
+1. **Backend**
+   - xUnit: Framework de testes
+   - Moq: Biblioteca para mocking
+   - FluentAssertions: Melhora a legibilidade das asserções
+
+2. **Frontend**
+   - Jest: Framework de testes
+   - React Testing Library: Biblioteca para testar componentes React
+   - MSW: Mock Service Worker para simular chamadas API
+
+## 🔄 Melhorias Recentes
+
+- **Sistema de Cache**: Implementado cache local para melhorar a performance
+- **Notificações**: Adicionado sistema de alertas para níveis de dengue alto
+- **Testes**: Expandidos testes unitários e de integração
+- **UI/UX**: Melhorias na interface e experiência do usuário
+- **Performance**: Otimizações de renderização e carregamento de dados
+
+## 📝 Documentação da API
+
+A documentação completa da API está disponível através do Swagger em:
+```
+http://localhost:5000/swagger
+```
+
+### Endpoints Principais
+
+- `GET /api/dengue/week/{ew}/{ey}`: Consulta dados por semana epidemiológica
+- `GET /api/dengue/latest`: Retorna dados das últimas 3 semanas
+- `GET /api/dengue/export`: Exporta dados em formato CSV
+
+## 🤝 Contribuindo
+
+1. Faça um fork do projeto
 2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
-3. Faça commit das mudanças (`git commit -am 'Adiciona nova feature'`)
-4. Faça push para a branch (`git push origin feature/nova-feature`)
-5. Crie um Pull Request
+3. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
+4. Push para a branch (`git push origin feature/nova-feature`)
+5. Abra um Pull Request
 
-## Licença
+## 📄 Licença
 
-Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## 👥 Autores
+
+- Seu Nome - [seu-email@exemplo.com](mailto:seu-email@exemplo.com)
+
+## 🙏 Agradecimentos
+
+- API AlertaDengue pela disponibilização dos dados
+- Sommus Sistemas pelo teste técnico desafiador
