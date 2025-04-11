@@ -239,5 +239,32 @@ namespace SommusDengue.API.Controllers
                 return StatusCode(500, new { error = "Error retrieving dengue alerts", details = ex.Message });
             }
         }
+
+        [HttpGet("last-six-months")]
+        public async Task<ActionResult<IEnumerable<DengueAlertResponse>>> GetLastSixMonths()
+        {
+            try
+            {
+                _logger.LogInformation("Getting last six months of dengue alerts");
+                var alerts = await _alertaDengueService.GetLastSixMonthsAlerts();
+                var response = alerts.Select(alert => DengueAlertResponse.FromDengueAlert(alert))
+                    .Where(response => response != null)
+                    .ToList();
+
+                if (!response.Any())
+                {
+                    _logger.LogWarning("No alerts found for the last six months");
+                    return NotFound("No alerts found for the last six months");
+                }
+
+                _logger.LogInformation($"Retrieved {response.Count} alerts for the last six months");
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving last six months of dengue alerts");
+                return StatusCode(500, new { error = "Error retrieving dengue alerts", details = ex.Message });
+            }
+        }
     }
 } 

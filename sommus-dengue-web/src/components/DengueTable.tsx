@@ -9,7 +9,10 @@ import {
     Paper,
     Typography,
     Tooltip,
-    IconButton
+    IconButton,
+    Box,
+    useTheme,
+    useMediaQuery
 } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import { DengueAlert } from '../types/DengueAlert';
@@ -19,158 +22,249 @@ interface DengueTableProps {
     data: DengueAlert[];
 }
 
+interface Column {
+    id: keyof DengueAlert | 'actions';
+    label: string;
+    tooltip: string;
+    align?: 'right' | 'left' | 'center';
+    format?: (value: any) => string | JSX.Element;
+    minWidth?: number;
+}
+
 const DengueTable: React.FC<DengueTableProps> = ({ data }) => {
-    const getTooltip = (field: string) => {
-        const tooltips: { [key: string]: string } = {
-            semana: "Semana epidemiológica e ano (AAAA-SS)",
-            data: "Data de início da semana epidemiológica",
-            casos_est: "Número de casos estimados para a semana",
-            min_est: "Limite inferior do intervalo de confiança da estimativa",
-            max_est: "Limite superior do intervalo de confiança da estimativa",
-            notificados: "Número de casos notificados na semana",
-            rt1: "Probabilidade do número reprodutivo efetivo ser maior que 1",
-            incidencia: "Incidência de casos por 100 mil habitantes",
-            alerta: "Nível de alerta: 1 (Verde), 2 (Amarelo), 3 (Laranja), 4 (Vermelho)",
-            reprodutivo: "Número reprodutivo efetivo (Rt)",
-            populacao: "População do município",
-            receptividade: "Índice de receptividade do município",
-            transmissao: "Índice de transmissão",
-            nivel_inc: "Nível de incidência",
-            acumulado: "Total de notificações acumuladas no ano"
-        };
-        return tooltips[field] || "";
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isTablet = useMediaQuery(theme.breakpoints.down('md'));
+
+    const columns: Column[] = [
+        {
+            id: 'semanaEpidemiologicaFormatada',
+            label: 'Semana Epidemiológica',
+            tooltip: 'Semana epidemiológica e ano (AAAA-SS)',
+            minWidth: 120
+        },
+        {
+            id: 'dataIniSETimestamp',
+            label: 'Data de Início',
+            tooltip: 'Data de início da semana epidemiológica',
+            format: (value) => formatDate(value),
+            minWidth: 110
+        },
+        {
+            id: 'casosEstimados',
+            label: 'Casos Estimados',
+            tooltip: 'Número de casos estimados para a semana',
+            align: 'right',
+            format: (value) => value?.toFixed(1) ?? '-',
+            minWidth: 100
+        },
+        {
+            id: 'casosEstimadosMin',
+            label: 'Mín. Estimado',
+            tooltip: 'Limite inferior do intervalo de confiança da estimativa',
+            align: 'right',
+            format: (value) => value?.toFixed(1) ?? '-',
+            minWidth: 100
+        },
+        {
+            id: 'casosEstimadosMax',
+            label: 'Máx. Estimado',
+            tooltip: 'Limite superior do intervalo de confiança da estimativa',
+            align: 'right',
+            format: (value) => value?.toFixed(1) ?? '-',
+            minWidth: 100
+        },
+        {
+            id: 'casosNotificados',
+            label: 'Casos Notificados',
+            tooltip: 'Número de casos notificados na semana',
+            align: 'right',
+            format: (value) => value ?? '-',
+            minWidth: 100
+        },
+        {
+            id: 'probabilidadeRt1',
+            label: 'Prob. Rt1',
+            tooltip: 'Probabilidade do número reprodutivo efetivo ser maior que 1',
+            align: 'right',
+            format: (value) => value?.toFixed(3) ?? '-',
+            minWidth: 90
+        },
+        {
+            id: 'incidenciaPor100k',
+            label: 'Inc./100k hab',
+            tooltip: 'Incidência de casos por 100 mil habitantes',
+            align: 'right',
+            format: (value) => value?.toFixed(2) ?? '-',
+            minWidth: 100
+        },
+        {
+            id: 'nivelAlerta',
+            label: 'Nível de Alerta',
+            tooltip: 'Nível de alerta: 1 (Verde), 2 (Amarelo), 3 (Laranja), 4 (Vermelho)',
+            align: 'center',
+            format: (value) => <AlertLevel level={value} />,
+            minWidth: 110
+        },
+        {
+            id: 'numeroReprodutivoEfetivo',
+            label: 'Nº Reprodutivo',
+            tooltip: 'Número reprodutivo efetivo (Rt)',
+            align: 'right',
+            format: (value) => value?.toFixed(3) ?? '-',
+            minWidth: 100
+        },
+        {
+            id: 'populacao',
+            label: 'População',
+            tooltip: 'População do município',
+            align: 'right',
+            format: (value) => value?.toLocaleString() ?? '-',
+            minWidth: 100
+        }
+    ];
+
+    // Se não for mobile, adiciona mais colunas
+    if (!isMobile) {
+        columns.push(
+            {
+                id: 'receptividade',
+                label: 'Receptividade',
+                tooltip: 'Índice de receptividade do município',
+                align: 'center',
+                format: (value) => value ?? '-',
+                minWidth: 110
+            },
+            {
+                id: 'transmissao',
+                label: 'Transmissão',
+                tooltip: 'Índice de transmissão',
+                align: 'center',
+                format: (value) => value ?? '-',
+                minWidth: 110
+            },
+            {
+                id: 'nivelIncidencia',
+                label: 'Nível Inc.',
+                tooltip: 'Nível de incidência',
+                align: 'center',
+                format: (value) => value ?? '-',
+                minWidth: 90
+            }
+        );
+    }
+
+    // Se não for tablet, adiciona a última coluna
+    if (!isTablet) {
+        columns.push({
+            id: 'notificacoesAcumuladasAno',
+            label: 'Notif. Acum. Ano',
+            tooltip: 'Total de notificações acumuladas no ano',
+            align: 'right',
+            format: (value) => value ?? '-',
+            minWidth: 120
+        });
+    }
+
+    const formatDate = (timestamp: number | null | undefined): string => {
+        try {
+            if (!timestamp) {
+                return 'Data não disponível';
+            }
+
+            const timestampMs = timestamp.toString().length === 10 
+                ? timestamp * 1000
+                : timestamp;
+
+            const date = new Date(timestampMs);
+            
+            if (isNaN(date.getTime())) {
+                return 'Data inválida';
+            }
+
+            return date.toLocaleDateString('pt-BR', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+        } catch (error) {
+            console.error('Error formatting date:', error);
+            return 'Data inválida';
+        }
     };
 
     return (
-        <TableContainer component={Paper} sx={{ mt: 4, mb: 4 }}>
-            <Typography variant="h6" sx={{ p: 2 }}>
-                Dados Detalhados
-            </Typography>
-            <Table sx={{ minWidth: 650 }} aria-label="tabela de dados da dengue">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>
-                            Semana Epidemiológica
-                            <Tooltip title={getTooltip('semana')}>
-                                <IconButton size="small"><InfoIcon fontSize="small" /></IconButton>
-                            </Tooltip>
-                        </TableCell>
-                        <TableCell>
-                            Data de Início
-                            <Tooltip title={getTooltip('data')}>
-                                <IconButton size="small"><InfoIcon fontSize="small" /></IconButton>
-                            </Tooltip>
-                        </TableCell>
-                        <TableCell align="right">
-                            Casos Estimados
-                            <Tooltip title={getTooltip('casos_est')}>
-                                <IconButton size="small"><InfoIcon fontSize="small" /></IconButton>
-                            </Tooltip>
-                        </TableCell>
-                        <TableCell align="right">
-                            Mín. Estimado
-                            <Tooltip title={getTooltip('min_est')}>
-                                <IconButton size="small"><InfoIcon fontSize="small" /></IconButton>
-                            </Tooltip>
-                        </TableCell>
-                        <TableCell align="right">
-                            Máx. Estimado
-                            <Tooltip title={getTooltip('max_est')}>
-                                <IconButton size="small"><InfoIcon fontSize="small" /></IconButton>
-                            </Tooltip>
-                        </TableCell>
-                        <TableCell align="right">
-                            Casos Notificados
-                            <Tooltip title={getTooltip('notificados')}>
-                                <IconButton size="small"><InfoIcon fontSize="small" /></IconButton>
-                            </Tooltip>
-                        </TableCell>
-                        <TableCell align="right">
-                            Prob. Rt1
-                            <Tooltip title={getTooltip('rt1')}>
-                                <IconButton size="small"><InfoIcon fontSize="small" /></IconButton>
-                            </Tooltip>
-                        </TableCell>
-                        <TableCell align="right">
-                            Inc./100k hab
-                            <Tooltip title={getTooltip('incidencia')}>
-                                <IconButton size="small"><InfoIcon fontSize="small" /></IconButton>
-                            </Tooltip>
-                        </TableCell>
-                        <TableCell align="center">
-                            Nível de Alerta
-                            <Tooltip title={getTooltip('alerta')}>
-                                <IconButton size="small"><InfoIcon fontSize="small" /></IconButton>
-                            </Tooltip>
-                        </TableCell>
-                        <TableCell align="right">
-                            Nº Reprodutivo
-                            <Tooltip title={getTooltip('reprodutivo')}>
-                                <IconButton size="small"><InfoIcon fontSize="small" /></IconButton>
-                            </Tooltip>
-                        </TableCell>
-                        <TableCell align="right">
-                            População
-                            <Tooltip title={getTooltip('populacao')}>
-                                <IconButton size="small"><InfoIcon fontSize="small" /></IconButton>
-                            </Tooltip>
-                        </TableCell>
-                        <TableCell align="center">
-                            Receptividade
-                            <Tooltip title={getTooltip('receptividade')}>
-                                <IconButton size="small"><InfoIcon fontSize="small" /></IconButton>
-                            </Tooltip>
-                        </TableCell>
-                        <TableCell align="center">
-                            Transmissão
-                            <Tooltip title={getTooltip('transmissao')}>
-                                <IconButton size="small"><InfoIcon fontSize="small" /></IconButton>
-                            </Tooltip>
-                        </TableCell>
-                        <TableCell align="center">
-                            Nível Inc.
-                            <Tooltip title={getTooltip('nivel_inc')}>
-                                <IconButton size="small"><InfoIcon fontSize="small" /></IconButton>
-                            </Tooltip>
-                        </TableCell>
-                        <TableCell align="right">
-                            Notif. Acum. Ano
-                            <Tooltip title={getTooltip('acumulado')}>
-                                <IconButton size="small"><InfoIcon fontSize="small" /></IconButton>
-                            </Tooltip>
-                        </TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {data.map((row) => (
-                        <TableRow
-                            key={row.semanaEpidemiologicaFormatada}
-                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                            <TableCell component="th" scope="row">
-                                {row.semanaEpidemiologicaFormatada}
-                            </TableCell>
-                            <TableCell>{new Date(row.dataIniSE).toLocaleDateString()}</TableCell>
-                            <TableCell align="right">{row.casosEstimados?.toFixed(1) ?? '-'}</TableCell>
-                            <TableCell align="right">{row.casosEstimadosMin?.toFixed(1) ?? '-'}</TableCell>
-                            <TableCell align="right">{row.casosEstimadosMax?.toFixed(1) ?? '-'}</TableCell>
-                            <TableCell align="right">{row.casosNotificados ?? '-'}</TableCell>
-                            <TableCell align="right">{row.probabilidadeRt1?.toFixed(3) ?? '-'}</TableCell>
-                            <TableCell align="right">{row.incidenciaPor100k?.toFixed(2) ?? '-'}</TableCell>
-                            <TableCell align="center">
-                                <AlertLevel level={row.nivelAlerta} />
-                            </TableCell>
-                            <TableCell align="right">{row.numeroReprodutivoEfetivo?.toFixed(3) ?? '-'}</TableCell>
-                            <TableCell align="right">{row.populacao?.toLocaleString() ?? '-'}</TableCell>
-                            <TableCell align="center">{row.receptividade ?? '-'}</TableCell>
-                            <TableCell align="center">{row.transmissao ?? '-'}</TableCell>
-                            <TableCell align="center">{row.nivelIncidencia ?? '-'}</TableCell>
-                            <TableCell align="right">{row.notificacoesAcumuladasAno ?? '-'}</TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+        <Box sx={{ width: '100%', overflow: 'hidden', my: 4 }}>
+            <Paper sx={{ 
+                width: '100%',
+                overflow: 'hidden',
+                boxShadow: 3,
+                borderRadius: 2
+            }}>
+                <Typography 
+                    variant="h6" 
+                    sx={{ 
+                        p: 2, 
+                        bgcolor: 'primary.main', 
+                        color: 'white',
+                        fontWeight: 'bold'
+                    }}
+                >
+                    Dados Detalhados
+                </Typography>
+                <TableContainer sx={{ maxHeight: 440 }}>
+                    <Table stickyHeader aria-label="tabela de dados da dengue">
+                        <TableHead>
+                            <TableRow>
+                                {columns.map((column) => (
+                                    <TableCell
+                                        key={column.id}
+                                        align={column.align}
+                                        style={{ 
+                                            minWidth: column.minWidth,
+                                            backgroundColor: theme.palette.grey[100]
+                                        }}
+                                    >
+                                        <Box sx={{ 
+                                            display: 'flex', 
+                                            alignItems: 'center',
+                                            justifyContent: column.align === 'right' ? 'flex-end' : 
+                                                          column.align === 'center' ? 'center' : 'flex-start',
+                                            gap: 0.5
+                                        }}>
+                                            {column.label}
+                                            <Tooltip title={column.tooltip}>
+                                                <IconButton size="small">
+                                                    <InfoIcon fontSize="small" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Box>
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {data.map((row) => (
+                                <TableRow
+                                    hover
+                                    key={row.semanaEpidemiologicaFormatada}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    {columns.map((column) => {
+                                        const value = row[column.id as keyof DengueAlert];
+                                        return (
+                                            <TableCell key={column.id} align={column.align}>
+                                                {column.format ? column.format(value) : value}
+                                            </TableCell>
+                                        );
+                                    })}
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Paper>
+        </Box>
     );
 };
 

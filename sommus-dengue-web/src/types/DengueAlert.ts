@@ -1,6 +1,7 @@
 export interface DengueAlert {
+    id: number;
     semanaEpidemiologica: number;
-    dataIniSE: Date;
+    dataIniSETimestamp: number;
     casosEstimados: number;
     casosEstimadosMin: number;
     casosEstimadosMax: number;
