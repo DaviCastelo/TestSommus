@@ -22,6 +22,7 @@ Sistema de monitoramento de casos de dengue para Belo Horizonte, desenvolvido co
 - MySQL
 - Entity Framework Core
 - Swagger/OpenAPI
+- Python (para coleta de dados)
 
 ### Frontend
 - React 18
@@ -98,6 +99,21 @@ npm run dev
 ```
 
 ## 📊 Estrutura do Projeto
+
+### Coleta de Dados
+O sistema utiliza um script Python (`dengue_data_collector.py`) para coletar dados da API AlertaDengue. Este script:
+- Coleta dados dos últimos 6 meses de casos de dengue em Belo Horizonte
+- Processa e normaliza os dados
+- Armazena as informações no banco de dados MySQL
+- Utiliza SQLAlchemy para interação com o banco de dados
+- Implementa tratamento de erros e logging
+
+Para executar o coletor de dados:
+```bash
+python dengue_data_collector.py
+```
+
+### Backend (.NET)
 
 ```
 sommus-dengue/
