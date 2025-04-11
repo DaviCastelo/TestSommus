@@ -19,20 +19,20 @@ const DengueChart: React.FC<DengueChartProps> = ({ data }) => {
                 }}
             >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="semana_epidemiologica" />
+                <XAxis dataKey="semanaEpidemiologicaFormatada" />
                 <YAxis />
                 <Tooltip />
                 <Legend />
                 <Line
                     type="monotone"
-                    dataKey="casos_est"
+                    dataKey="casosEstimados"
                     name="Casos Estimados"
                     stroke="#8884d8"
                     activeDot={{ r: 8 }}
                 />
                 <Line
                     type="monotone"
-                    dataKey="casos_notificados"
+                    dataKey="casosNotificados"
                     name="Casos Notificados"
                     stroke="#82ca9d"
                     activeDot={{ r: 8 }}

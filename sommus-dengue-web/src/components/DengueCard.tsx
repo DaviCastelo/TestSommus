@@ -13,15 +13,15 @@ const DengueCard: React.FC<DengueCardProps> = ({ data }) => {
             <CardContent>
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                     <Typography variant="h6" component="div">
-                        Semana {data.semana_epidemiologica}
+                        Semana {data.semanaEpidemiologicaFormatada}
                     </Typography>
-                    <AlertLevel level={data.nivel_alerta} />
+                    <AlertLevel level={data.nivelAlerta} />
                 </Box>
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    Casos Estimados: {data.casos_est}
+                    Casos Estimados: {data.casosEstimados?.toFixed(1)}
                 </Typography>
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    Casos Notificados: {data.casos_notificados}
+                    Casos Notificados: {data.casosNotificados}
                 </Typography>
             </CardContent>
         </Card>

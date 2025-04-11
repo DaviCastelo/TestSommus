@@ -13,28 +13,38 @@ namespace SommusDengue.API.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DengueAlert>()
-                .HasKey(d => new { d.SemanaEpidemiologica, d.DataIniSETimestamp });
+            modelBuilder.Entity<DengueAlert>(entity =>
+            {
+                entity.ToTable("denguealerts");
+                entity.HasKey(e => e.Id);
 
-            modelBuilder.Entity<DengueAlert>()
-                .Property(d => d.CasosEstimados)
-                .HasPrecision(10, 2);
+                // Configure decimal precision for numeric fields
+                entity.Property(e => e.CasosEstimados)
+                    .HasPrecision(10, 2);
 
-            modelBuilder.Entity<DengueAlert>()
-                .Property(d => d.ProbabilidadeRt1)
-                .HasPrecision(10, 8);
+                entity.Property(e => e.CasosEstimadosMin)
+                    .HasPrecision(10, 2);
 
-            modelBuilder.Entity<DengueAlert>()
-                .Property(d => d.IncidenciaPor100k)
-                .HasPrecision(10, 6);
+                entity.Property(e => e.CasosEstimadosMax)
+                    .HasPrecision(10, 2);
 
-            modelBuilder.Entity<DengueAlert>()
-                .Property(d => d.NumeroReprodutivoEfetivo)
-                .HasPrecision(10, 8);
+                entity.Property(e => e.ProbabilidadeRt1)
+                    .HasPrecision(10, 8);
 
-            modelBuilder.Entity<DengueAlert>()
-                .Property(d => d.DataInicioSE)
-                .HasComputedColumnSql("FROM_UNIXTIME(DataIniSETimestamp / 1000)");
+                entity.Property(e => e.IncidenciaPor100k)
+                    .HasPrecision(10, 6);
+
+                entity.Property(e => e.NumeroReprodutivoEfetivo)
+                    .HasPrecision(10, 8);
+
+                // Configure unique index
+                entity.HasIndex(e => new { e.SemanaEpidemiologica, e.DataIniSETimestamp })
+                    .IsUnique();
+
+                // Explicitly ignore computed properties
+                entity.Ignore(e => e.DataIniSE);
+                entity.Ignore(e => e.SemanaEpidemiologicaFormatada);
+            });
 
             base.OnModelCreating(modelBuilder);
         }

@@ -4,6 +4,8 @@ import { DengueAlert } from './types/DengueAlert';
 import { dengueApi } from './services/api';
 import DengueCard from './components/DengueCard';
 import DengueChart from './components/DengueChart';
+import DengueTable from './components/DengueTable';
+import AlertLegend from './components/AlertLegend';
 
 function App() {
   const [alerts, setAlerts] = useState<DengueAlert[]>([]);
@@ -43,7 +45,7 @@ function App() {
   }, []);
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 4 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
         <Typography variant="h4" component="h1">
           Monitoramento de Dengue - BH
@@ -79,12 +81,17 @@ function App() {
           <Typography variant="h6" gutterBottom>
             Últimas 3 Semanas
           </Typography>
-          {alerts.map((alert) => (
-            <DengueCard
-              key={alert.semana_epidemiologica}
-              data={alert}
-            />
-          ))}
+          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 4 }}>
+            {alerts.map((alert) => (
+              <Box key={alert.semanaEpidemiologica} sx={{ flex: '1 1 300px' }}>
+                <DengueCard data={alert} />
+              </Box>
+            ))}
+          </Box>
+
+          <DengueTable data={alerts} />
+
+          <AlertLegend />
         </>
       )}
     </Container>

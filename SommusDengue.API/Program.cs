@@ -13,26 +13,28 @@ builder.Services.AddSwaggerGen();
 // Configure CORS
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(builder =>
-        builder.SetIsOriginAllowed(_ => true) // Permite qualquer origem em desenvolvimento
-               .AllowAnyMethod()
-               .AllowAnyHeader()
-               .AllowCredentials());
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
 });
 
-// Configure HttpClient
-builder.Services.AddHttpClient<IAlertaDengueService, AlertaDengueService>();
-
-// Configure Database
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<DengueContext>(options =>
+// Configure HttpClient for InfoDengue API
+builder.Services.AddHttpClient("InfoDengue", client =>
 {
-    options.UseMySql(
-        connectionString,
-        ServerVersion.AutoDetect(connectionString),
-        mySqlOptions => mySqlOptions.EnableRetryOnFailure()
-    );
+    client.BaseAddress = new Uri("https://info.dengue.mat.br/");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
 });
+
+// Configure database connection
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseMySql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
+    ));
 
 // Register Services
 builder.Services.AddScoped<IAlertaDengueService, AlertaDengueService>();
@@ -50,7 +52,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Use CORS before routing and authorization
-app.UseCors();
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
@@ -60,7 +62,7 @@ app.MapControllers();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<DengueContext>();
+    var context = services.GetRequiredService<ApplicationDbContext>();
     context.Database.EnsureCreated();
 }
 
