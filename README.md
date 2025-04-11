@@ -71,14 +71,10 @@ docker-compose up -d
 
 #### Backend
 
-1. Configure o banco de dados:
+1. Execute a aplicação:
 ```bash
 cd SommusDengue.API
-dotnet ef database update
-```
-
-2. Execute a aplicação:
-```bash
+dotnet build
 dotnet run
 ```
 
@@ -98,7 +94,7 @@ cp .env.example .env
 
 3. Execute a aplicação:
 ```bash
-npm start
+npm run dev
 ```
 
 ## 📊 Estrutura do Projeto
